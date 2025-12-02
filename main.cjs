@@ -35,18 +35,18 @@ function createWindow() {
   if (process.env.NODE_ENV === "development") {
     win.loadURL("http://localhost:5173");
   } else {
-    win.loadFile(path.join(__dirname, "dist/index.html"));
+    win.loadFile(path.join(app.getAppPath(), "dist", "index.html"));
   }
 
   // Hide window instead of quitting
-  win.on("close", (event) => {
-    event.preventDefault();
-    win.hide();
-    new Notification({
-      title: "AI Agent",
-      body: "AI Agent is still running in background. Use tray to reopen.",
-    }).show();
-  });
+  // win.on("close", (event) => {
+  //   event.preventDefault();
+  //   win.hide();
+  //   new Notification({
+  //     title: "AI Agent",
+  //     body: "AI Agent is still running in background. Use tray to reopen.",
+  //   }).show();
+  // });
 }
 
 /**
@@ -54,7 +54,7 @@ function createWindow() {
  */
 function scanNetwork() {
   return new Promise((resolve) => {
-    const subnet = "192.168.1"; // TODO: make dynamic
+    const subnet = "192.168.29"; // TODO: make dynamic
     const activeDevices = [];
     let pending = 254;
 
