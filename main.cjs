@@ -5,6 +5,7 @@ const {
   Menu,
   ipcMain,
   Notification,
+  dialog 
 } = require("electron");
 const path = require("path");
 const say = require("say");
@@ -75,6 +76,7 @@ function scanNetwork() {
 app.whenReady().then(() => {
   createWindow();
 
+
   // Tray integration
   tray = new Tray(path.join(__dirname, "icon.png"));
   const contextMenu = Menu.buildFromTemplate([
@@ -82,16 +84,16 @@ app.whenReady().then(() => {
     { label: "Speak Test", click: () => say.speak("Hello, I am your AI agent.") },
     { label: "Quit", click: () => app.quit() },
   ]);
-  tray.setToolTip("AI Desktop Agent");
+  tray.setToolTip("Desktop Agent");
   tray.setContextMenu(contextMenu);
 
   // Auto-launch setup
-  const agentLauncher = new AutoLaunch({ name: "AI Desktop Agent" });
+  const agentLauncher = new AutoLaunch({ name: "Desktop Agent" });
   agentLauncher.enable();
 
   new Notification({
-    title: "AI Agent",
-    body: "AI Agent has started and is running in background.",
+    title: "Agent",
+    body: "Agent has started and is running in background.",
   }).show();
 });
 
@@ -227,6 +229,23 @@ ipcMain.handle("speak", async (event, msg) => {
   } catch (err) {
     console.error("TTS error:", err);
   }
+});
+
+// 🔔 Listen for notification requests
+ipcMain.on('show-notification', (event, { title, body }) => {
+  
+  new Notification({ title, body }).show();
+  console.log("🚀 ~ Notification:", Notification)
+});
+
+// choose folder 
+
+// ✅ Register handler in main process
+ipcMain.handle("choose-folder", async () => {
+  const result = await dialog.showOpenDialog({
+    properties: ["openDirectory"]
+  });
+  return result.filePaths;
 });
 
 // Global error handling

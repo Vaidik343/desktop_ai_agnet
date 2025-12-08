@@ -13,22 +13,33 @@ export default function RulesTable() {
   return (
     <div>
       <h2>Rules</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th><th>Condition</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rules.map(rule => (
-            <tr key={rule.id}>
-              <td>{rule.name}</td>
-              <td>{JSON.stringify(rule.condition)}</td>
-              <td>{rule.action}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <thead>
+  <tr>
+    <th>Name</th>
+    <th>Condition</th>
+    <th>Action</th>
+    <th>Severity</th> {/* NEW */}
+  </tr>
+</thead>
+<tbody>
+  {rules.map(rule => (
+    <tr key={rule.id}>
+      <td>{rule.name}</td>
+      <td>{JSON.stringify(rule.condition)}</td>
+      <td>{rule.action}</td>
+      <td>
+        <span className={`badge px-2 py-1 ${
+          rule.severity === "critical" ? "text-bg-danger" :
+          rule.severity === "high" ? "text-bg-warning" :
+          "text-bg-secondary"
+        }`}>
+          {rule.severity || "—"}
+        </span>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
     </div>
   );
 }

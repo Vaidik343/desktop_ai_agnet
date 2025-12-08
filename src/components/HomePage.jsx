@@ -61,7 +61,7 @@ const handleSend = async (cmd = input) => {
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>AI Desktop Agent</h1>
+      <h1>Desktop Agent</h1>
 
       <input
         type="text"

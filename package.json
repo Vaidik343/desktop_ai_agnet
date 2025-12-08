@@ -1,8 +1,9 @@
 {
-  "name": "ai-agent",
+  "name": "FIM",
   "private": true,
   "version": "0.0.0",
   "main": "main.cjs",
+  "type": "module",
   "scripts": {
     "electron": "electron ./main.cjs",
     "start-electron": "electron ./main.cjs",
@@ -10,15 +11,20 @@
     "build": "vite build && cross-env NODE_ENV=production electron-builder"
   },
   "dependencies": {
+    "chokidar": "^5.0.0",
     "dotenv": "^17.2.3",
     "electron-auto-launch": "^5.0.7",
     "net-ping": "^1.2.4",
     "node-arp": "^1.0.6",
+    "node-fetch": "^3.3.2",
     "openai": "^6.9.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.6",
-    "say": "^0.16.0"
+    "say": "^0.16.0",
+    "semver": "^7.7.3",
+    "socket.io-client": "^4.8.1",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -34,5 +40,33 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "vite": "^7.2.2"
+  },
+  "build": {
+    "appId": "com.example.desktopagent",
+    "productName": "Desktop Agent",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist_electron"
+    },
+    "files": [
+      "dist/**",
+      "main.cjs",
+      "preload.js",
+      "node_modules/**"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }
