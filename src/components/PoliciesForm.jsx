@@ -9,6 +9,7 @@ export default function PoliciesForm() {
     allowedExtensions: [],
     forbiddenExtensions: []
   });
+  console.log("🚀 ~ PoliciesForm ~ form:", form)
 
   useEffect(() => {
     fetchPolicies();

@@ -9,7 +9,7 @@ function isExtensionAllowed(filePath, allowed = [], forbidden = []) {
   if (forbidden.includes(ext)) return false;
   if (allowed.length > 0 && !allowed.includes(ext)) return false;
   return true;
-}
+} 
 
 
 async function sendActivity(agentId, filePath, action) {

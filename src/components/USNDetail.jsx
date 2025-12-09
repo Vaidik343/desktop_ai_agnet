@@ -7,7 +7,7 @@ const isVersionVulnerable = (agentVersion, affectedRanges) => {
   // Example: affectedRanges contains strings like ">=18.0.0 <18.18.0"
   return affectedRanges.some(range => {
     const match = range.match(/>=([\d.]+)\s*<([\d.]+)/);
-    if (!match) return false;
+    if (!match) return false; 
 
     const [_, min, max] = match;
     return agentVersion >= min && agentVersion < max;

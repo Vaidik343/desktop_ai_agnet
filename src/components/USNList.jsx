@@ -9,7 +9,7 @@ export default function USNList({ onSelect ,selected }) {
       .then(data => setUsns(Array.isArray(data) ? data : []))
       .catch(err => console.error("Failed to fetch USNs:", err));
   }, []);
-
+ 
   return (
     <div className="container mt-4">
       <h3 className="mb-3">USN Updates</h3>
