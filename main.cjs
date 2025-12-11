@@ -24,7 +24,7 @@ let tray;
  */
 function createWindow() {
   win = new BrowserWindow({
-    width: 800,
+    width: 1250,
     height: 600,
     show: true,
     webPreferences: {

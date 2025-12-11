@@ -45,6 +45,9 @@ export default function ActivityLogsPage() {
             <th>Action</th>
             <th>File Path</th>
             <th>Agent</th>
+            <th>Severity</th>
+<th>Recommended Action</th>
+
              {/* <th>Disposition</th>  */}
           </tr>
         </thead>
@@ -70,6 +73,18 @@ export default function ActivityLogsPage() {
                 <td className="text-break">{log.filePath}</td>
 
                 <td><strong>{getAgentName(log.agentId)}</strong></td>
+                <td>
+  <span className={`badge ${
+    log.severity === "critical" ? "text-bg-danger" :
+    log.severity === "high" ? "text-bg-warning" :
+    log.severity === "medium" ? "text-bg-info" :
+    "text-bg-secondary"
+  }`}>
+    {log.severity || "—"}
+  </span>
+</td>
+<td>{log.actionRecommended || "—"}</td>
+
                  {/* <td>{log.disposition || "pending"}</td> */}
               </tr>
             ))

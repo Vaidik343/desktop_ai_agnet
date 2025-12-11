@@ -1,7 +1,8 @@
+// AgentsTable.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function AgentsTable() {
+export default function AgentsTable({ onSelect, selected, mode = "navigate" }) {
   const [agents, setAgents] = useState([]);
   const navigate = useNavigate();
 
@@ -15,7 +16,6 @@ export default function AgentsTable() {
         console.error("Failed to fetch agents:", err);
       }
     }
-
     loadAgents();
     const interval = setInterval(loadAgents, 3000);
     return () => clearInterval(interval);
@@ -43,10 +43,17 @@ export default function AgentsTable() {
     return "💻";
   };
 
+  const handleRowClick = (agent) => {
+    if (mode === "navigate") {
+      navigate(`/apps/${agent.id}`);
+    } else {
+      onSelect?.(agent);
+    }
+  };
+
   return (
     <div className="container mt-3">
       <h2 className="mb-4">Agents</h2>
-
       <table className="table table-bordered table-hover shadow-sm">
         <thead className="table-secondary">
           <tr>
@@ -58,13 +65,12 @@ export default function AgentsTable() {
             <th>Actions</th>
           </tr>
         </thead>
-
         <tbody>
           {agents.map(agent => (
             <tr
-              key={agent.id }
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate(`/apps/${agent.id }`)} // ✅ navigate to apps route
+              key={agent.id}
+              style={{ cursor: "pointer", backgroundColor: selected?.id === agent.id ? "#f0f8ff" : "inherit" }}
+              onClick={() => handleRowClick(agent)}
             >
               <td className="fw-bold">{agent.name}</td>
               <td>
@@ -75,24 +81,18 @@ export default function AgentsTable() {
               <td>
                 <span
                   className={`badge px-3 py-2 ${
-                    agent.status === "active"
-                      ? "text-bg-success"
-                      : "text-bg-danger"
+                    agent.status === "active" ? "text-bg-success" : "text-bg-danger"
                   }`}
                 >
                   {agent.status}
                 </span>
               </td>
-              <td>
-                {agent.lastSeen
-                  ? new Date(agent.lastSeen).toLocaleString()
-                  : "—"}
-              </td>
+              <td>{agent.lastSeen ? new Date(agent.lastSeen).toLocaleString() : "—"}</td>
               <td>
                 <button
                   className="btn btn-sm btn-primary"
                   onClick={(e) => {
-                    e.stopPropagation(); // prevent row click navigation
+                    e.stopPropagation();
                     sendHeartbeat(agent.id);
                   }}
                 >
@@ -101,7 +101,6 @@ export default function AgentsTable() {
               </td>
             </tr>
           ))}
-
           {agents.length === 0 && (
             <tr>
               <td colSpan="6" className="text-center text-muted py-3">

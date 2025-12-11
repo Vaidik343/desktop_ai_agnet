@@ -7,7 +7,7 @@
   "scripts": {
     "electron": "electron ./main.cjs",
     "start-electron": "electron ./main.cjs",
-      "dev": "cross-env NODE_ENV=development concurrently \"vite\" \"electron ./main.cjs\" \"node src/agent/startAgent.js\"",
+    "dev": "cross-env NODE_ENV=development concurrently \"vite\" \"electron ./main.cjs\" \"node src/agent/startAgent.js\"",
     "build": "vite build && cross-env NODE_ENV=production electron-builder"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "net-ping": "^1.2.4",
     "node-arp": "^1.0.6",
     "node-fetch": "^3.3.2",
+    "node-notifier": "^10.0.1",
     "openai": "^6.9.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

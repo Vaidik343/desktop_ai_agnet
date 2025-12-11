@@ -2,6 +2,8 @@ import chokidar from "chokidar";
 import path from "path";
 import { sendBaseline } from "./agent.js";
 import fetch from "node-fetch";
+import notifier from "node-notifier";
+
 
 function isExtensionAllowed(filePath, allowed = [], forbidden = []) {
   const ext = path.extname(filePath).toLowerCase();
@@ -10,7 +12,6 @@ function isExtensionAllowed(filePath, allowed = [], forbidden = []) {
   if (allowed.length > 0 && !allowed.includes(ext)) return false;
   return true;
 } 
-
 
 async function sendActivity(agentId, filePath, action) {
   try {
@@ -32,7 +33,20 @@ async function sendActivity(agentId, filePath, action) {
 }
 
 
-export function watchFolders(agentId, folders, allowedExtensions, forbiddenExtensions) {
+async function getAgentName(agentId) {
+  try {
+    const res = await fetch(`http://localhost:7000/api/agents/${agentId}`);
+    const agent = await res.json();
+    return agent.name || agentId;
+  } catch (err) {
+    console.error("❌ Failed to fetch agent name:", err);
+    return agentId; // fallback
+  }
+}
+
+
+export async function watchFolders(agentId, folders, allowedExtensions, forbiddenExtensions) {
+   const agentName = await getAgentName(agentId);
   folders.forEach(folder => {
     console.log("Watching folder:", folder);
     const watcher = chokidar.watch(folder, { ignoreInitial: true });
@@ -56,12 +70,11 @@ export function watchFolders(agentId, folders, allowedExtensions, forbiddenExten
           const result = await res.json();
           console.log("🚨 Violation sent to backend:", result);
 
-           if (window?.agentAPI?.notify) {
-      window.agentAPI.notify(
-        "Violation Detected",
-        `${filePath} → Forbidden extension`
-      );
-    }
+      notifier.notify({
+  title: `Violation Detected - ${agentName}`,
+  message: `${filePath} → Forbidden extension`,
+  sound: true
+});
         } catch (err) {
           console.error("❌ Failed to send violation:", err);
         }

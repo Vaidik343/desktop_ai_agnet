@@ -7,7 +7,8 @@ export default function PoliciesForm() {
     agentId: "",
     folders: [],
     allowedExtensions: [],
-    forbiddenExtensions: []
+    forbiddenExtensions: [],
+    blockedExtensions: []
   });
   console.log("🚀 ~ PoliciesForm ~ form:", form)
 
@@ -138,6 +139,21 @@ export default function PoliciesForm() {
           />
         </div>
 
+           {/* Blocked Extensions ✅ */}
+        <div className="mb-3">
+          <label className="form-label fw-bold">Blocked Extensions</label>
+          <input
+            className="form-control"
+            placeholder="e.g., webp, dll"
+            onChange={e =>
+              setForm({
+                ...form,
+                blockedExtensions: e.target.value.split(","),
+              })
+            }
+          />
+        </div>
+
         {/* Submit Button */}
         <button className="btn btn-primary" type="submit">
           Create Policy
@@ -154,6 +170,7 @@ export default function PoliciesForm() {
             <div><strong>Folders:</strong> {p.folders?.join(", ")}</div>
             <div><strong>Allowed Ext:</strong> {p.allowedExtensions?.join(", ") || "None"}</div>
             <div><strong>Forbidden Ext:</strong> {p.forbiddenExtensions?.join(", ") || "None"}</div>
+            <div><strong>blocked Ext:</strong> {p.blockedExtensions?.join(", ") || "None"}</div>
 
             <button
               className="btn btn-danger btn-sm mt-2"

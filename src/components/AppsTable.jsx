@@ -21,6 +21,7 @@ export default function AppsTable() {
     async function fetchApps() {
       try {
         const res = await fetch(`http://localhost:7000/api/apps/${agentId}`);
+        console.log("🚀 ~ fetchApps ~ res:", res)
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!cancelled) setApps(Array.isArray(data) ? data : []);
@@ -54,7 +55,7 @@ export default function AppsTable() {
             <th>Name</th>
             <th>Version</th>
             <th>Status</th>
-            <th>Severity</th>
+            {/* <th>Severity</th> */}
             <th>Recommended Action</th>
             <th>Installed At</th>
             <th>Removed At</th>
@@ -85,7 +86,7 @@ export default function AppsTable() {
                     {app.status}
                   </span>
                 </td>
-                <td>
+                {/* <td>
                   <span
                     className={`badge px-2 py-1 ${
                       app.severity === "critical"
@@ -99,7 +100,7 @@ export default function AppsTable() {
                   >
                     {app.severity || "—"}
                   </span>
-                </td>
+                </td> */}
                 <td>{app.actionRecommended || "—"}</td>
                 <td>
                   {app.installedAt

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light  bg-light border-bottom shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-light position-fixed vw-100 z-3 bg-light border-bottom shadow-sm">
       <div className="container-fluid">
         {/* Brand */}
         <Link className="navbar-brand fw-bold" to="/">
@@ -43,8 +43,11 @@ export default function Navbar() {
             <li className="nav-item">
               <Link className="nav-link" to="/activity">Activity Logs</Link>
             </li>
-            {/* <li className="nav-item">
+            <li className="nav-item">
               <Link className="nav-link" to="/usn">USN</Link>
+            </li>
+            {/* <li className="nav-item">
+              <Link className="nav-link" to={`/baseline`}>Baseline</Link>
             </li> */}
             <li className="nav-item">
               <Link className="nav-link" to="/apps">Apps</Link>

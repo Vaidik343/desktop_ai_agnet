@@ -24,7 +24,7 @@ function App() {
             <Route path="/violations" element={<ViolationsTable />} />
             <Route path="/baseline/:agentId" element={<BaselineTableWrapper />} />
             <Route path="/activity" element={<ActivityLogsPage />} /> {/* ✅ no :id */}
-            {/* <Route path="/usn" element={<USNDashboard />} /> */}
+            <Route path="/usn" element={<USNDashboard />} />
          <Route path="/apps/:agentId" element={<AppsTable />} />
 
             <Route path="/" element={<p>Welcome! Select a page from the Navbar.</p>} />

@@ -16,10 +16,10 @@ export default function ViolationsTable() {
         // Show notification for latest violation
         if (data.violations && data.violations.length > 0) {
           const latest = data.violations[data.violations.length - 1];
-          window.agentAPI.notify(
-            "Violation Detected",
-            `${latest.filePath} → ${latest.reason}`
-          );
+          // window.agentAPI.notify(
+          //   "Violation Detected",
+          //   `${latest.filePath} → ${latest.reason}`
+          // );
         }
       } catch (err) {
         console.error("Error loading violations:", err);
@@ -47,10 +47,10 @@ export default function ViolationsTable() {
   const socket = io("http://localhost:7000");
   socket.on("violation", (v) => {
     setViolations(prev => [...prev, v]);
-    window.agentAPI.notify(
-      "Violation Detected",
-      `${v.agentId} → ${v.reason}`
-    );
+    // window.agentAPI.notify(
+    //   "Violation Detected",
+    //   `${v.agentId} → ${v.reason}`
+    // );
   });
   return () => socket.disconnect();
 }, []);
@@ -68,9 +68,10 @@ export default function ViolationsTable() {
             <th>Agent</th>
             <th>File Path</th>
             <th>Reason</th>
+             <th>Recommended Action</th>
+                <th>Severity</th> 
             <th>Timestamp</th>
-                <th>Severity</th> {/* NEW */}
-    <th>Recommended Action</th> {/* NEW */}
+    
           </tr>
         </thead>
 
