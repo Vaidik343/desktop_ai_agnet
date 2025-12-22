@@ -1,47 +1,66 @@
+// USNDetail.jsx
 import React, { useEffect, useState } from "react";
 import { socket } from "../services/socket";
-
-const isVersionVulnerable = (agentVersion, affectedRanges) => {
-  if (!agentVersion || !Array.isArray(affectedRanges)) return false;
-  return affectedRanges.some(range => {
-    const match = range.match(/>=([\d.]+)\s*<([\d.]+)/);
-    if (!match) return false;
-    const [_, min, max] = match;
-    return agentVersion >= min && agentVersion < max;
-  });
-};
+import semver from "semver";
 
 export default function USNDetail({ notice, agent }) {
   const [actionStatus, setActionStatus] = useState(null);
 
-  // Always call useEffect, guard inside
+  // Listen for agent actions via socket
   useEffect(() => {
-    if (!notice) return; // guard here
-    socket.on("actionCompleted", (data) => {
-      if (data.usnId === notice.usnId) {
-        setActionStatus(data);
+    if (!notice || !agent) return;
+
+    const handleAgentAction = (data) => {
+      // data should have agentId, alertId, action, filePath
+      if (data.agentId === agent.id) {
+        setActionStatus({
+          success: true,
+          action: data.action,
+          message: `Action "${data.action}" executed successfully`
+        });
       }
-    });
-    return () => socket.off("actionCompleted");
-  }, [notice]);
+    };
+
+    socket.on("agentAction", handleAgentAction);
+    return () => socket.off("agentAction", handleAgentAction);
+  }, [notice, agent]);
 
   if (!notice) {
     return <p className="text-muted">Select a USN to view details.</p>;
   }
 
+  // Check vulnerability using semver
   const agentVersion = agent?.version || agent?.nodeVersion || "";
   const affectedRanges = notice.affectedVersions || [];
-  const vulnerable = agent && isVersionVulnerable(agentVersion, affectedRanges);
+  const vulnerable =
+    agent &&
+    affectedRanges.some((range) =>
+      semver.satisfies(agentVersion, range)
+    );
 
+  // Execute action by creating alert in backend
   async function executeAction(action) {
     try {
-      const res = await fetch("http://localhost:7000/api/actions", {
+      const res = await fetch("http://localhost:7000/api/alerts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ usnId: notice.usnId, agentId: agent.id, action })
+        body: JSON.stringify({
+          agentId: agent.id,
+          filePath: null,
+          changeType: "package",
+          reason: `User-triggered USN action: ${action}`,
+          severity: "high",
+          actionRecommended: action
+        })
       });
+
       const data = await res.json();
-      setActionStatus({ success: true, action, message: data.message || "Executed successfully" });
+
+      setActionStatus({
+        success: true,
+        action,
+        message: data.message || `Action "${action}" alert created`
+      });
     } catch (err) {
       setActionStatus({ success: false, action, message: err.message });
     }
@@ -65,6 +84,7 @@ export default function USNDetail({ notice, agent }) {
             <>
               <h5>Agent: {agent.name}</h5>
               <p><strong>Version:</strong> {agentVersion}</p>
+
               {vulnerable ? (
                 <div className="alert alert-danger mt-3">
                   ⚠️ <strong>Vulnerable</strong> to {notice.usnId}<br />
@@ -75,6 +95,7 @@ export default function USNDetail({ notice, agent }) {
                   ✅ <strong>Safe</strong> — Agent version {agentVersion} is not affected.
                 </div>
               )}
+
               {vulnerable && (
                 <div className="mt-3">
                   <h6>Recommended Action: <strong>{notice.actionRecommended || "monitor"}</strong></h6>
@@ -86,6 +107,7 @@ export default function USNDetail({ notice, agent }) {
                   </div>
                 </div>
               )}
+
               {actionStatus && (
                 <div className={`alert mt-3 ${actionStatus.success ? "alert-success" : "alert-danger"}`}>
                   Action {actionStatus.action}: {actionStatus.message}

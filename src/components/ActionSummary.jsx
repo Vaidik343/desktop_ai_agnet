@@ -1,13 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { socket } from "../services/socket";
 
 export default function ActionSummary({ usns }) {
-  // Count how many USNs recommend each action
-  const actionCounts = usns.reduce((acc, usn) => {
-    if (usn.actionRecommended) {
-      acc[usn.actionRecommended] = (acc[usn.actionRecommended] || 0) + 1;
-    }
-    return acc;
-  }, {});
+  const [actionCounts, setActionCounts] = useState({});
+
+  useEffect(() => {
+    // Count actions from backend USNs
+const counts = (usns || []).reduce((acc, usn) => {
+
+      if (usn.actionRecommended) {
+        acc[usn.actionRecommended] = (acc[usn.actionRecommended] || 0) + 1;
+      }
+      return acc;
+    }, {});
+    setActionCounts(counts);
+
+    // Update in real-time via socket
+    socket.on("usnAction", ({ action }) => {
+      setActionCounts(prev => ({
+        ...prev,
+        [action]: (prev[action] || 0) + 1
+      }));
+    });
+
+    return () => socket.off("usnAction");
+  }, [usns]);
 
   return (
     <div className="action-summary card p-3 shadow-sm">

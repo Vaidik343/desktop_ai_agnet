@@ -28,7 +28,8 @@ async function startAgent(agent) {
   const mergedPolicy = {
     folders: agentPolicies.flatMap(p => p.folders || []),
     allowedExtensions: agentPolicies.flatMap(p => p.allowedExtensions || []),
-    forbiddenExtensions: agentPolicies.flatMap(p => p.forbiddenExtensions || [])
+    forbiddenExtensions: agentPolicies.flatMap(p => p.forbiddenExtensions || []),
+      blockedExtensions: agentPolicies.flatMap(p => p.blockedExtensions || [])
   };
 
   console.log("Loaded merged policy for", agentId, ":", mergedPolicy);
@@ -43,7 +44,8 @@ async function startAgent(agent) {
     allowedExtensions: mergedPolicy.allowedExtensions,
     forbiddenExtensions: mergedPolicy.forbiddenExtensions
   });
-  watchFolders(agentId, mergedPolicy.folders, mergedPolicy.allowedExtensions, mergedPolicy.forbiddenExtensions);
+  watchFolders(agentId, mergedPolicy.folders, mergedPolicy.allowedExtensions, mergedPolicy.forbiddenExtensions, mergedPolicy.blockedExtensions
+);
 }
 
 async function main() {

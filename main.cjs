@@ -36,7 +36,7 @@ function createWindow() {
   if (process.env.NODE_ENV === "development") {
     win.loadURL("http://localhost:5173");
   } else {
-    win.loadFile(path.join(app.getAppPath(), "dist", "index.html"));
+    win.loadFile(path.join(__dirname, "dist", "index.html"));
   }
 
   // Hide window instead of quitting
@@ -53,25 +53,6 @@ function createWindow() {
 /**
  * Simple ARP-based network scan
  */
-function scanNetwork() {
-  return new Promise((resolve) => {
-    const subnet = "192.168.29"; // TODO: make dynamic
-    const activeDevices = [];
-    let pending = 254;
-
-    for (let i = 1; i <= 254; i++) {
-      const ip = `${subnet}.${i}`;
-      arp.getMAC(ip, (err, mac) => {
-        if (!err && mac) {
-          activeDevices.push({ ip, mac });
-          console.log(`Found: ${ip} → ${mac}`);
-        }
-        if (--pending === 0) resolve(activeDevices);
-      });
-    }
-    say.speak("Network scan started. Check console for results.");
-  });
-}
 
 app.whenReady().then(() => {
   createWindow();
@@ -126,10 +107,6 @@ const actions = {
         const info = `CPU: ${os.cpus()[0].model}, Memory: ${(os.totalmem() / 1e9).toFixed(2)} GB`;
         say.speak(info);
         break;
-
-      case "scan_network":
-        const devices = await scanNetwork();
-        return { status: `Scan complete: ${devices.length} devices found`, devices };
 
       case "open_app":
         if (typeof arg !== "string") {

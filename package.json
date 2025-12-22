@@ -14,7 +14,6 @@
     "chokidar": "^5.0.0",
     "dotenv": "^17.2.3",
     "electron-auto-launch": "^5.0.7",
-    "net-ping": "^1.2.4",
     "node-arp": "^1.0.6",
     "node-fetch": "^3.3.2",
     "node-notifier": "^10.0.1",
@@ -55,6 +54,10 @@
       "dist/**",
       "main.cjs",
       "preload.js",
+      "src/agent/**",
+      "src/api/**",
+      "src/services/**",
+      "src/utils/**",
       "node_modules/**"
     ],
     "win": {
